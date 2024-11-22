@@ -1,42 +1,60 @@
-// CardProvider.tsx
+// src/contexts/CardProvider.tsx
 import { createContext, ReactNode, useContext } from "react";
 
-type Card = {
-  suit: "hearts" | "diamonds" | "clubs" | "spades";
-  rank: string;
+// Define the card type
+export type Card = {
+  suit: string; // e.g., "Hearts", "Diamonds", etc.
+  rank: string; // e.g., "A", "2", ..., "K"
 };
 
-const suits = ["hearts", "diamonds", "clubs", "spades"] as const;
-const ranks = [
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "J",
-  "Q",
-  "K",
-  "A",
-];
+// Card context type
+type CardContextType = {
+  cardTypes: Card[];
+};
 
-const CardContext = createContext<Card[] | null>(null);
+// Create the Card context
+const CardContext = createContext<CardContextType | undefined>(undefined);
 
-// export const CardProvider = ({ children }: { children: ReactNode }) => {
-//   const cards: Card[] = suits.flatMap((suit) =>
-//     ranks.map((rank) => ({ suit, rank }))
-//   );
+// CardProvider component
+export const CardProvider = ({ children }: { children: ReactNode }) => {
+  // Define the 52 standard playing cards
+  const cardTypes: Card[] = [];
+  const suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
+  const ranks = [
+    "A",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "J",
+    "Q",
+    "K",
+  ];
 
-//   return <CardContext.Provider value={cards}>{children}</CardContext.Provider>;
-// };
+  // Generate the deck
+  suits.forEach((suit) => {
+    ranks.forEach((rank) => {
+      cardTypes.push({ suit, rank });
+    });
+  });
 
-export const useCards = () => {
+  return (
+    <CardContext.Provider value={{ cardTypes }}>
+      {children}
+    </CardContext.Provider>
+  );
+};
+
+// Custom hook to consume the context
+export const useCard = () => {
   const context = useContext(CardContext);
   if (!context) {
-    throw new Error("useCards must be used within a CardProvider");
+    throw new Error("useCard must be used within a CardProvider");
   }
   return context;
 };

@@ -2,12 +2,12 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-// import { CardProvider } from "./contexts/CardProvider";
-// import { DeckProvider } from "./contexts/DeckProvider";
-// import { GameProvider } from "./contexts/GameProvider";
+import { CardProvider } from "./contexts/CardProvider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <CardProvider>
+      <App />
+    </CardProvider>
   </StrictMode>
 );
