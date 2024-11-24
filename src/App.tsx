@@ -1,33 +1,41 @@
 // src/App.tsx
-import React, { useState } from "react";
-import { useDeck } from "./contexts/DeckProvider";
-import "./App.css"; // Optional for styling
+import React from "react";
+import { useGame } from "./contexts/GameProvider";
+import "./App.css";
 
 const App: React.FC = () => {
-  const { deck, shuffleDeck, resetDeck } = useDeck();
-  const [message, setMessage] = useState<string>("");
+  const { playerHand, dealerHand, deal, hit, stand, double, gameStatus } =
+    useGame();
 
-  // Shuffle deck and display a message
-  const handleShuffle = () => {
-    shuffleDeck();
-    setMessage("The deck has been shuffled!");
-  };
-
-  // Reset deck and display a message
-  const handleReset = () => {
-    resetDeck();
-    setMessage("The deck has been reset to its original state!");
-  };
+  const renderHand = (hand: { suit: string; value: string }[]) =>
+    hand.map((card, index) => (
+      <span key={index}>
+        {card.value} of {card.suit}
+        {index < hand.length - 1 && ", "}
+      </span>
+    ));
 
   return (
     <div className="App">
-      <h1>Blackjack Game</h1>
-      <p>There are {deck.length} cards remaining in the deck.</p>
+      <h1>Blackjack</h1>
+      <p>Game Status: {gameStatus}</p>
+
       <div>
-        <button onClick={handleShuffle}>Shuffle Deck</button>
-        <button onClick={handleReset}>Reset Deck</button>
+        <h2>Dealer's Hand</h2>
+        <p>{dealerHand.length ? renderHand(dealerHand) : "Not dealt yet"}</p>
       </div>
-      {message && <p>{message}</p>}
+
+      <div>
+        <h2>Player's Hand</h2>
+        <p>{playerHand.length ? renderHand(playerHand) : "Not dealt yet"}</p>
+      </div>
+
+      <div className="controls">
+        <button onClick={deal}>Deal</button>
+        <button onClick={hit}>Hit</button>
+        <button onClick={stand}>Stand</button>
+        <button onClick={double}>Double</button>
+      </div>
     </div>
   );
 };
