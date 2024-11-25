@@ -1,25 +1,21 @@
-// src/contexts/DeckProvider.tsx
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 
-// Define a simple card type
-type Card = {
-  rank: string;
+interface Card {
   suit: string;
-};
-
-// Define the context type
-interface DeckContextType {
-  deck: Card[];
-  resetDeck: () => void;
-  shuffleDeck: () => void;
+  value: string;
 }
 
-// Create the context with a default empty value
-const DeckContext = createContext<DeckContextType | undefined>(undefined);
+interface DeckContextValue {
+  deck: Card[];
+  shuffleDeck: () => void;
+  drawCard: () => Card | null;
+}
 
-// Card suits and ranks
-const suits = ["hearts", "diamonds", "clubs", "spades"];
-const ranks = [
+const DeckContext = createContext<DeckContextValue | undefined>(undefined);
+
+const suits = ["♠", "♥", "♦", "♣"];
+const values = [
+  "A",
   "2",
   "3",
   "4",
@@ -32,30 +28,17 @@ const ranks = [
   "J",
   "Q",
   "K",
-  "A",
 ];
 
-// Create a helper function to generate a deck of cards
 const generateDeck = (): Card[] => {
-  const deck: Card[] = [];
-  for (let suit of suits) {
-    for (let rank of ranks) {
-      deck.push({ rank, suit });
-    }
-  }
-  return deck;
+  return suits.flatMap((suit) => values.map((value) => ({ suit, value })));
 };
 
-// Define DeckProvider props
-interface DeckProviderProps {
-  children: React.ReactNode;
-}
-
-// Create the DeckProvider component
-export const DeckProvider: React.FC<DeckProviderProps> = ({ children }) => {
+export const DeckProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [deck, setDeck] = useState<Card[]>(generateDeck());
 
-  // Shuffle deck function
   const shuffleDeck = () => {
     const shuffledDeck = [...deck];
     for (let i = shuffledDeck.length - 1; i > 0; i--) {
@@ -65,20 +48,21 @@ export const DeckProvider: React.FC<DeckProviderProps> = ({ children }) => {
     setDeck(shuffledDeck);
   };
 
-  // Reset deck function
-  const resetDeck = () => {
-    setDeck(generateDeck());
+  const drawCard = (): Card | null => {
+    if (deck.length === 0) return null;
+    const [card, ...rest] = deck;
+    setDeck(rest);
+    return card;
   };
 
   return (
-    <DeckContext.Provider value={{ deck, shuffleDeck, resetDeck }}>
+    <DeckContext.Provider value={{ deck, shuffleDeck, drawCard }}>
       {children}
     </DeckContext.Provider>
   );
 };
 
-// Custom hook to use the DeckContext
-export const useDeck = (): DeckContextType => {
+export const useDeck = (): DeckContextValue => {
   const context = useContext(DeckContext);
   if (!context) {
     throw new Error("useDeck must be used within a DeckProvider");
