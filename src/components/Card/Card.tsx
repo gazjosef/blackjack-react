@@ -1,7 +1,8 @@
+// Card.tsx
 import React from "react";
 import styled from "styled-components";
 
-// Define suit images
+// Define suit images for pips
 const suitImages: Record<string, string> = {
   heart: "/images/heart.svg",
   diamond: "/images/diamond.svg",
@@ -9,14 +10,22 @@ const suitImages: Record<string, string> = {
   spade: "/images/spade.svg",
 };
 
-// Define the pip placements for different values
+// Define face images mapping for J, Q, K using colour
+const faceImages: Record<string, string> = {
+  "J-red": "/images/jack-red.svg",
+  "Q-red": "/images/queen-red.svg",
+  "K-red": "/images/king-red.svg",
+  "J-black": "/images/jack-black.svg",
+  "Q-black": "/images/queen-black.svg",
+  "K-black": "/images/king-black.svg",
+};
+
+// Define the pip placements for non-face cards
 const pipPositions: Record<
   string,
   { row: number; col: number; rotate?: boolean }[]
 > = {
-  A: [
-    { row: 4, col: 2 }, // centre pip for Ace
-  ],
+  A: [{ row: 4, col: 2 }],
   "2": [
     { row: 1, col: 2 },
     { row: 7, col: 2, rotate: true },
@@ -89,8 +98,7 @@ const pipPositions: Record<
     { row: 7, col: 1, rotate: true },
     { row: 7, col: 3, rotate: true },
   ],
-  // For face cards you might decide to not use pips at all,
-  // or use a different design. For now, we leave them empty.
+  // For face cards we won't use pips.
   J: [],
   Q: [],
   K: [],
@@ -99,7 +107,7 @@ const pipPositions: Record<
 // Styled Card Component
 const CardWrapper = styled.div<{ suit: string }>`
   --width: 5em;
-  --height: calc(var(--width) * 1.4);
+  --height: calc(var(--width) * 1.7);
   width: var(--width);
   height: var(--height);
   background-color: white;
@@ -114,7 +122,7 @@ const CardWrapper = styled.div<{ suit: string }>`
     props.suit === "heart" || props.suit === "diamond" ? "red" : "black"};
 `;
 
-// Styled Pip Component
+// Styled Pip Component (for non-face cards)
 const Pip = styled.div<{
   suit: string;
   row: number;
@@ -153,11 +161,31 @@ const CornerNumber = styled.div<{ position: "top" | "bottom"; suit: string }>`
   }
 `;
 
+// Styled Face Image (for J, Q, K)
+const FaceImage = styled.img`
+  grid-row: 2 / span 5;
+  grid-column: 1 / -1;
+  width: 80%;
+  margin: auto;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+`;
+
 // Card Component
 const Card: React.FC<{
   suit: "heart" | "diamond" | "club" | "spade";
   value: string;
 }> = ({ suit, value }) => {
+  // Determine card colour based on suit
+  const colour = suit === "heart" || suit === "diamond" ? "red" : "black";
+
+  // Check if card is a face card
+  const isFaceCard = ["J", "Q", "K"].includes(value);
+
+  // Determine face image path if needed
+  const faceImagePath = isFaceCard ? faceImages[`${value}-${colour}`] : "";
+
   return (
     <CardWrapper suit={suit} data-suit={suit} data-value={value}>
       {/* Corner Numbers */}
@@ -168,16 +196,21 @@ const Card: React.FC<{
         {value}
       </CornerNumber>
 
-      {/* Pips dynamically positioned */}
-      {pipPositions[value]?.map((pos, index) => (
-        <Pip
-          key={index}
-          suit={suit}
-          row={pos.row}
-          col={pos.col}
-          rotate={pos.rotate}
-        />
-      ))}
+      {isFaceCard ? (
+        // Render face image for Jack, Queen, King
+        <FaceImage src={faceImagePath} alt={`${value} of ${suit}`} />
+      ) : (
+        // Render pips for non-face cards
+        pipPositions[value]?.map((pos, index) => (
+          <Pip
+            key={index}
+            suit={suit}
+            row={pos.row}
+            col={pos.col}
+            rotate={pos.rotate}
+          />
+        ))
+      )}
     </CardWrapper>
   );
 };
