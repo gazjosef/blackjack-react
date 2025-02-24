@@ -1,13 +1,23 @@
 import { useState } from "react";
 
 // Define a type for a playing card
+// export interface Card {
+//   suit: string;
+//   value: string;
+// }
 export interface Card {
-  suit: string;
+  suit: "spade" | "heart" | "diamond" | "club";
   value: string;
 }
 
 // Define suits and values
-const suits = ["♠", "♥", "♦", "♣"];
+// const suits = ["♠", "♥", "♦", "♣"];
+const suits: ("spade" | "heart" | "diamond" | "club")[] = [
+  "spade",
+  "heart",
+  "diamond",
+  "club",
+];
 const values = [
   "A",
   "2",

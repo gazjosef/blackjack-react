@@ -14,6 +14,9 @@ const pipPositions: Record<
   string,
   { row: number; col: number; rotate?: boolean }[]
 > = {
+  A: [
+    { row: 4, col: 2 }, // centre pip for Ace
+  ],
   "2": [
     { row: 1, col: 2 },
     { row: 7, col: 2, rotate: true },
@@ -29,7 +32,68 @@ const pipPositions: Record<
     { row: 7, col: 1, rotate: true },
     { row: 7, col: 3, rotate: true },
   ],
-  // Add other numbers accordingly...
+  "5": [
+    { row: 1, col: 1 },
+    { row: 1, col: 3 },
+    { row: 4, col: 2 },
+    { row: 7, col: 1, rotate: true },
+    { row: 7, col: 3, rotate: true },
+  ],
+  "6": [
+    { row: 1, col: 1 },
+    { row: 1, col: 3 },
+    { row: 4, col: 1 },
+    { row: 4, col: 3 },
+    { row: 7, col: 1, rotate: true },
+    { row: 7, col: 3, rotate: true },
+  ],
+  "7": [
+    { row: 1, col: 1 },
+    { row: 1, col: 3 },
+    { row: 4, col: 1 },
+    { row: 4, col: 2 },
+    { row: 4, col: 3 },
+    { row: 7, col: 1, rotate: true },
+    { row: 7, col: 3, rotate: true },
+  ],
+  "8": [
+    { row: 1, col: 1 },
+    { row: 1, col: 3 },
+    { row: 3, col: 1 },
+    { row: 3, col: 3 },
+    { row: 5, col: 1, rotate: true },
+    { row: 5, col: 3, rotate: true },
+    { row: 7, col: 1, rotate: true },
+    { row: 7, col: 3, rotate: true },
+  ],
+  "9": [
+    { row: 1, col: 1 },
+    { row: 1, col: 3 },
+    { row: 3, col: 1 },
+    { row: 3, col: 3 },
+    { row: 4, col: 2 },
+    { row: 5, col: 1, rotate: true },
+    { row: 5, col: 3, rotate: true },
+    { row: 7, col: 1, rotate: true },
+    { row: 7, col: 3, rotate: true },
+  ],
+  "10": [
+    { row: 1, col: 1 },
+    { row: 1, col: 3 },
+    { row: 2, col: 1 },
+    { row: 2, col: 3 },
+    { row: 5, col: 1 },
+    { row: 5, col: 3, rotate: true },
+    { row: 6, col: 1, rotate: true },
+    { row: 6, col: 3, rotate: true },
+    { row: 7, col: 1, rotate: true },
+    { row: 7, col: 3, rotate: true },
+  ],
+  // For face cards you might decide to not use pips at all,
+  // or use a different design. For now, we leave them empty.
+  J: [],
+  Q: [],
+  K: [],
 };
 
 // Styled Card Component
