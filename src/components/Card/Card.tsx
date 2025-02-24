@@ -61,7 +61,7 @@ const pipPositions: Record<
     { row: 1, col: 1 },
     { row: 1, col: 3 },
     { row: 4, col: 1 },
-    { row: 4, col: 2 },
+    { row: 5, col: 2 },
     { row: 4, col: 3 },
     { row: 7, col: 1, rotate: true },
     { row: 7, col: 3, rotate: true },
@@ -115,10 +115,12 @@ const CardWrapper = styled.div<{ suit: string }>`
   border: 1px solid #000;
   border-radius: 0.25em;
   padding: 1em;
+
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(7, 1fr);
   position: relative;
+
   color: ${(props) =>
     props.suit === "heart" || props.suit === "diamond" ? "red" : "black"};
 `;
