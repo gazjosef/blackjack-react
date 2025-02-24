@@ -1,12 +1,5 @@
-// import React from "react";
-
-// import BlackjackTable from "./components/BlackJackTable/BlackJackTable";
-// import { DeckProvider } from "./contexts/DeckProvider";
-// import { GameProvider } from "./contexts/GameProvider";
-
 import { useDeck } from "./hooks/useDeck";
-// import { Card } from "./components/Card";
-import { Card } from "./components/Card/Card";
+import Card from "./components/Card/Card";
 import styled from "styled-components";
 
 const DeckContainer = styled.div`
@@ -23,7 +16,9 @@ const App = () => {
     <div>
       <h1>Blackjack Deck</h1>
       <button onClick={shuffleDeck}>Shuffle</button>
-      <button onClick={drawCard}>Draw Card</button>
+      <button onClick={drawCard} disabled={deck.length === 0}>
+        Draw Card
+      </button>
 
       {drawnCard && (
         <p>
@@ -34,7 +29,7 @@ const App = () => {
 
       <DeckContainer>
         {deck.map((card, index) => (
-          <Card key={index} card={card} />
+          <Card key={index} suit={card.suit} value={card.value} />
         ))}
       </DeckContainer>
     </div>
