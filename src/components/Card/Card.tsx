@@ -175,10 +175,26 @@ const FaceImage = styled.img`
   user-select: none;
 `;
 
+type Suit = "heart" | "diamond" | "club" | "spade";
+type Value =
+  | "A"
+  | "2"
+  | "3"
+  | "4"
+  | "5"
+  | "6"
+  | "7"
+  | "8"
+  | "9"
+  | "10"
+  | "J"
+  | "Q"
+  | "K";
+
 // Card Component
 const Card: React.FC<{
-  suit: "heart" | "diamond" | "club" | "spade";
-  value: string;
+  suit: Suit;
+  value: Value;
 }> = ({ suit, value }) => {
   // Determine card colour based on suit
   const colour = suit === "heart" || suit === "diamond" ? "red" : "black";
