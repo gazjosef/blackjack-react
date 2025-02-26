@@ -89,8 +89,10 @@ const pipPositions: Record<
     { row: 1, col: 3 },
     { row: 2, col: 1 },
     { row: 2, col: 3 },
-    { row: 5, col: 1 },
-    { row: 5, col: 3, rotate: true },
+
+    { row: 2, col: 2 },
+    { row: 6, col: 2, rotate: true },
+
     { row: 6, col: 1, rotate: true },
     { row: 6, col: 3, rotate: true },
     { row: 7, col: 1, rotate: true },
