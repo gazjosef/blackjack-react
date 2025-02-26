@@ -1,5 +1,6 @@
 import { useDeck } from "./hooks/useDeck";
 import Card from "./components/Card/Card";
+import BlackJackTable from "./components/BlackJackTable/BlackJackTable2";
 import styled from "styled-components";
 
 const DeckContainer = styled.div`
@@ -32,6 +33,8 @@ const App = () => {
           <Card key={index} suit={card.suit} value={card.value} />
         ))}
       </DeckContainer>
+
+      <BlackJackTable />
     </div>
   );
 };
