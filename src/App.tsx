@@ -1,14 +1,14 @@
 import { useDeck } from "./hooks/useDeck";
-import Card from "./components/Card/Card";
+// import Card from "./components/Card/Card";
 import BlackJackTable from "./components/BlackJackTable/BlackJackTable2";
-import styled from "styled-components";
+// import styled from "styled-components";
 
-const DeckContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(13, 1fr);
-  gap: 8px;
-  margin-top: 20px;
-`;
+// const DeckContainer = styled.div`
+//   display: grid;
+//   grid-template-columns: repeat(13, 1fr);
+//   gap: 8px;
+//   margin-top: 20px;
+// `;
 
 const App = () => {
   const { deck, drawnCard, shuffleDeck, drawCard } = useDeck();
@@ -28,11 +28,11 @@ const App = () => {
       )}
       <p>Cards Left: {deck.length}</p>
 
-      <DeckContainer>
+      {/* <DeckContainer>
         {deck.map((card, index) => (
           <Card key={index} suit={card.suit} value={card.value} />
         ))}
-      </DeckContainer>
+      </DeckContainer> */}
 
       <BlackJackTable />
     </div>

@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 export const TableContainer = styled.div`
-  width: 60%; /* Adjust for table size */
+  width: 80%; /* Adjust for table size */
   height: 100px;
   padding-bottom: 30%; /* Creates the curved effect */
-  background-color: green;
-  border: 5px solid black;
+  background-color: #327932;
+  border: 5px solid darkgoldenrod;
   border-bottom-left-radius: 100%;
   border-bottom-right-radius: 100%;
   position: absolute;
