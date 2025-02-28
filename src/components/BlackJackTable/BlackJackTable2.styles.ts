@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
 export const TableContainer = styled.div`
-  width: 80%; /* Adjust for table size */
+  width: 100%; /* Adjust for table size */
   height: 100px;
-  padding-bottom: 30%; /* Creates the curved effect */
+  padding-bottom: 35%; /* Creates the curved effect */
   background-color: #327932;
   border: 5px solid darkgoldenrod;
   border-bottom-left-radius: 100%;

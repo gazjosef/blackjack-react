@@ -85,8 +85,10 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 
 ### Built With
 
-- [![JavaScript][JavaScript.com]][JavaScript-url]
-- [![SASS][SASS.com]][SASS-url]
+- ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+- ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+- ![Context-API](https://img.shields.io/badge/Context--Api-000000?style=for-the-badge&logo=react)
+- ![Styled Components](https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white)
 - [![Jest][Jest.com]][Jest-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

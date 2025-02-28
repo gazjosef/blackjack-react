@@ -23,7 +23,7 @@ export const GlobalStyles = createGlobalStyle`
     body {
     box-sizing: border-box;
 
-    background-color: var(--clr-white-100);
+    background-color: #2f4f4f4f;
     }
 
     /* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
