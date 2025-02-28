@@ -2,6 +2,7 @@ import { useDeck } from "./hooks/useDeck";
 // import Card from "./components/Card/Card";
 import BlackJackTable from "./components/BlackJackTable/BlackJackTable2";
 // import styled from "styled-components";
+import GlobalStyles from "./styles/GlobalStyles";
 
 // const DeckContainer = styled.div`
 //   display: grid;
@@ -15,6 +16,7 @@ const App = () => {
 
   return (
     <div>
+      <GlobalStyles />
       <h1>Blackjack Deck</h1>
       <button onClick={shuffleDeck}>Shuffle</button>
       <button onClick={drawCard} disabled={deck.length === 0}>
