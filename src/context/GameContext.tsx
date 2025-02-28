@@ -1,11 +1,5 @@
 import React, { createContext, useContext, useReducer, ReactNode } from "react";
-import { generateDeck } from "../hooks/useDeck";
-
-// Define card type
-export interface Card {
-  suit: "spade" | "heart" | "diamond" | "club";
-  value: string;
-}
+import { generateDeck, Card } from "../hooks/useDeck";
 
 // Define game state
 interface GameState {
@@ -14,6 +8,7 @@ interface GameState {
   dealerHand: Card[];
   playerScore: number;
   dealerScore: number;
+  balance: number;
   gameStatus: "playing" | "player-won" | "dealer-won" | "tie";
 }
 
@@ -31,6 +26,7 @@ const initialState: GameState = {
   dealerHand: [],
   playerScore: 0,
   dealerScore: 0,
+  balance: 1000,
   gameStatus: "playing",
 };
 
@@ -70,6 +66,8 @@ const calculateScore = (hand: Card[]): number => {
 const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
     case "INITIALIZE_GAME": {
+      if (state.balance < 50) return state;
+
       let deck = generateDeck();
       deck = [...deck].sort(() => Math.random() - 0.5); // Shuffle
 
@@ -88,6 +86,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         dealerHand,
         playerScore: calculateScore(playerHand),
         dealerScore: calculateScore(dealerHand),
+        balance: state.balance - 50,
         gameStatus: "playing",
       };
     }
@@ -117,7 +116,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     }
 
     case "DEALER_PLAY": {
-      let { deck, dealerHand } = state;
+      let { deck, dealerHand, balance } = state;
       let dealerScore = calculateScore(dealerHand);
 
       while (dealerScore < 17) {
@@ -138,6 +137,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         gameStatus = "player-won";
       } else {
         gameStatus = "tie";
+        balance += 50;
       }
 
       return { ...state, deck, dealerHand, dealerScore, gameStatus };
