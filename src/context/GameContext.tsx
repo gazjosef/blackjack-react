@@ -34,8 +34,9 @@ const initialState: GameState = {
   gameStatus: "playing",
 };
 
-// Function to draw a card and update the deck
-const drawCard = (deck: Card[]): { card: Card; newDeck: Card[] } => {
+// Function to draw a card safely
+const drawCard = (deck: Card[]): { card: Card | null; newDeck: Card[] } => {
+  if (deck.length === 0) return { card: null, newDeck: [] };
   const [card, ...newDeck] = deck;
   return { card, newDeck };
 };
@@ -77,8 +78,8 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       const { card: dealerCard1, newDeck: deck3 } = drawCard(deck2);
       const { card: dealerCard2, newDeck: deck4 } = drawCard(deck3);
 
-      const playerHand = [playerCard1, playerCard2];
-      const dealerHand = [dealerCard1, dealerCard2];
+      const playerHand = [playerCard1!, playerCard2!];
+      const dealerHand = [dealerCard1!, dealerCard2!];
 
       return {
         ...state,
@@ -94,9 +95,10 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case "HIT": {
       if (state.gameStatus !== "playing") return state;
 
-      const { deck, playerHand } = state;
-      const { card: newCard, newDeck } = drawCard(deck);
-      const newPlayerHand = [...playerHand, newCard];
+      const { card: newCard, newDeck } = drawCard(state.deck);
+      if (!newCard) return state; // No card left
+
+      const newPlayerHand = [...state.playerHand, newCard];
       const newPlayerScore = calculateScore(newPlayerHand);
 
       const gameStatus = newPlayerScore > 21 ? "dealer-won" : "playing";
@@ -111,7 +113,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     }
 
     case "STAND": {
-      return { ...state, gameStatus: "dealer-won" }; // Placeholder logic
+      return gameReducer(state, { type: "DEALER_PLAY" });
     }
 
     case "DEALER_PLAY": {
@@ -120,6 +122,8 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
 
       while (dealerScore < 17) {
         const { card: newCard, newDeck } = drawCard(deck);
+        if (!newCard) break;
+
         dealerHand = [...dealerHand, newCard];
         deck = newDeck;
         dealerScore = calculateScore(dealerHand);
