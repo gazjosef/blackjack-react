@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, ReactNode } from "react";
-import { generateDeck, drawCard } from "../hooks/useDeck";
+import { generateDeck } from "../hooks/useDeck";
 
 // Define card type
 export interface Card {
@@ -14,8 +14,6 @@ interface GameState {
   dealerHand: Card[];
   playerScore: number;
   dealerScore: number;
-  playerBalance: number;
-  betAmount: number;
   gameStatus: "playing" | "player-won" | "dealer-won" | "tie";
 }
 
@@ -24,49 +22,91 @@ type GameAction =
   | { type: "INITIALIZE_GAME" }
   | { type: "HIT" }
   | { type: "STAND" }
-  | { type: "DEALER_PLAY" }
-  | { type: "CHECK_WINNER" }
-  | { type: "RESET_GAME" }
-  | { type: "PLACE_BET"; amount: number };
+  | { type: "DEALER_PLAY" };
 
 // Initial state
 const initialState: GameState = {
-  deck: generateDeck(),
+  deck: [],
   playerHand: [],
   dealerHand: [],
   playerScore: 0,
   dealerScore: 0,
-  playerBalance: 1000, // Starting money
-  betAmount: 0,
   gameStatus: "playing",
+};
+
+// Function to draw a card and update the deck
+const drawCard = (deck: Card[]): { card: Card; newDeck: Card[] } => {
+  const [card, ...newDeck] = deck;
+  return { card, newDeck };
+};
+
+// Function to calculate hand score
+const calculateScore = (hand: Card[]): number => {
+  let score = 0;
+  let aceCount = 0;
+
+  hand.forEach(({ value }) => {
+    if (value === "A") {
+      aceCount++;
+      score += 11; // Ace starts as 11
+    } else if (["K", "Q", "J"].includes(value)) {
+      score += 10;
+    } else {
+      score += parseInt(value);
+    }
+  });
+
+  // Convert Aces from 11 to 1 if needed
+  while (score > 21 && aceCount > 0) {
+    score -= 10;
+    aceCount--;
+  }
+
+  return score;
 };
 
 // Reducer function
 const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
     case "INITIALIZE_GAME": {
-      const deck = generateDeck();
-      const playerHand = [drawCard(deck), drawCard(deck)];
-      const dealerHand = [drawCard(deck), drawCard(deck)];
+      let deck = generateDeck();
+      deck = [...deck].sort(() => Math.random() - 0.5); // Shuffle
+
+      const { card: playerCard1, newDeck: deck1 } = drawCard(deck);
+      const { card: playerCard2, newDeck: deck2 } = drawCard(deck1);
+      const { card: dealerCard1, newDeck: deck3 } = drawCard(deck2);
+      const { card: dealerCard2, newDeck: deck4 } = drawCard(deck3);
+
+      const playerHand = [playerCard1, playerCard2];
+      const dealerHand = [dealerCard1, dealerCard2];
 
       return {
         ...state,
-        deck,
+        deck: deck4,
         playerHand,
         dealerHand,
+        playerScore: calculateScore(playerHand),
+        dealerScore: calculateScore(dealerHand),
         gameStatus: "playing",
       };
     }
 
     case "HIT": {
+      if (state.gameStatus !== "playing") return state;
+
       const { deck, playerHand } = state;
-      const newCard = drawCard(deck);
-      const newHand = [...playerHand, newCard];
+      const { card: newCard, newDeck } = drawCard(deck);
+      const newPlayerHand = [...playerHand, newCard];
+      const newPlayerScore = calculateScore(newPlayerHand);
+
+      const gameStatus = newPlayerScore > 21 ? "dealer-won" : "playing";
 
       return {
         ...state,
-        deck,
-        playerHand: newHand,
+        deck: newDeck,
+        playerHand: newPlayerHand,
+        playerScore: newPlayerScore,
+        gameStatus,
       };
     }
 
@@ -74,8 +114,30 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       return { ...state, gameStatus: "dealer-won" }; // Placeholder logic
     }
 
-    case "RESET_GAME":
-      return initialState;
+    case "DEALER_PLAY": {
+      let { deck, dealerHand } = state;
+      let dealerScore = calculateScore(dealerHand);
+
+      while (dealerScore < 17) {
+        const { card: newCard, newDeck } = drawCard(deck);
+        dealerHand = [...dealerHand, newCard];
+        deck = newDeck;
+        dealerScore = calculateScore(dealerHand);
+      }
+
+      let gameStatus: GameState["gameStatus"] = "playing";
+      if (dealerScore > 21) {
+        gameStatus = "player-won";
+      } else if (dealerScore > state.playerScore) {
+        gameStatus = "dealer-won";
+      } else if (dealerScore < state.playerScore) {
+        gameStatus = "player-won";
+      } else {
+        gameStatus = "tie";
+      }
+
+      return { ...state, deck, dealerHand, dealerScore, gameStatus };
+    }
 
     default:
       return state;
@@ -91,7 +153,6 @@ const GameContext = createContext<{
 // Provider component
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
-
   return (
     <GameContext.Provider value={{ state, dispatch }}>
       {children}

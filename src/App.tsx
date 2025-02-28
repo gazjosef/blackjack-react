@@ -1,8 +1,10 @@
-import { useDeck } from "./hooks/useDeck";
+// import { useDeck } from "./hooks/useDeck";
+import { GameProvider } from "./context/GameContext";
+import Blackjack from "./components/BlackJack/BlackJack";
 // import Card from "./components/Card/Card";
-import BlackJackTable from "./components/BlackJackTable/BlackJackTable2";
+// import BlackJackTable from "./components/BlackJackTable/BlackJackTable2";
 // import styled from "styled-components";
-import GlobalStyles from "./styles/GlobalStyles";
+// import GlobalStyles from "./styles/GlobalStyles";
 
 // const DeckContainer = styled.div`
 //   display: grid;
@@ -12,32 +14,12 @@ import GlobalStyles from "./styles/GlobalStyles";
 // `;
 
 const App = () => {
-  const { deck, drawnCard, shuffleDeck, drawCard } = useDeck();
+  // const { deck, drawnCard, shuffleDeck, drawCard } = useDeck();
 
   return (
-    <div>
-      <GlobalStyles />
-      <h1>Blackjack Deck</h1>
-      <button onClick={shuffleDeck}>Shuffle</button>
-      <button onClick={drawCard} disabled={deck.length === 0}>
-        Draw Card
-      </button>
-
-      {drawnCard && (
-        <p>
-          Drawn Card: {drawnCard.value} {drawnCard.suit}
-        </p>
-      )}
-      <p>Cards Left: {deck.length}</p>
-
-      {/* <DeckContainer>
-        {deck.map((card, index) => (
-          <Card key={index} suit={card.suit} value={card.value} />
-        ))}
-      </DeckContainer> */}
-
-      <BlackJackTable />
-    </div>
+    <GameProvider>
+      <Blackjack />
+    </GameProvider>
   );
 };
 
