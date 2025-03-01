@@ -8,6 +8,8 @@ import React, {
 } from "react";
 import { generateDeck, Card } from "../hooks/useDeck";
 
+// const cardSound = new Audio("/assets/sounds/mixkit-poker-card-flick-2002.wav");
+
 // Define game state
 interface GameState {
   deck: Card[];
@@ -24,8 +26,8 @@ type GameAction =
   | { type: "INITIALIZE_GAME" }
   | { type: "HIT" }
   | { type: "STAND" }
-  | { type: "DEALER_PLAY" }
-  | { type: "DOUBLE_DOWN" };
+  | { type: "DOUBLE_DOWN" }
+  | { type: "DEALER_PLAY" };
 
 // Initial state
 const initialState: GameState = {
@@ -37,6 +39,11 @@ const initialState: GameState = {
   balance: 1000,
   gameStatus: "playing",
 };
+
+// const playCardSound = () => {
+//   const audio = new Audio(cardSound);
+//   audio.play();
+// };
 
 // Function to draw a card safely
 const drawCard = (deck: Card[]): { card: Card | null; newDeck: Card[] } => {
@@ -226,7 +233,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       state.playerHand.length === 0
     ) {
       dispatch({ type: "INITIALIZE_GAME" });
-      hasInitialized.current = true; // Set flag to prevent duplicate runs
+      hasInitialized.current = true;
     }
   }, [state.deck, state.playerHand]);
 
