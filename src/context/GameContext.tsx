@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useReducer, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  ReactNode,
+  useEffect,
+} from "react";
 import { generateDeck, Card } from "../hooks/useDeck";
 
 // Define game state
@@ -17,7 +23,8 @@ type GameAction =
   | { type: "INITIALIZE_GAME" }
   | { type: "HIT" }
   | { type: "STAND" }
-  | { type: "DEALER_PLAY" };
+  | { type: "DEALER_PLAY" }
+  | { type: "DOUBLE_DOWN" };
 
 // Initial state
 const initialState: GameState = {
@@ -115,6 +122,42 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       return gameReducer(state, { type: "DEALER_PLAY" });
     }
 
+    case "DOUBLE_DOWN": {
+      if (state.gameStatus !== "playing" || state.balance < 50) return state; // Ensure valid state and enough balance
+
+      const { card: newCard, newDeck } = drawCard(state.deck);
+      if (!newCard) return state; // No card left
+
+      const newPlayerHand = [...state.playerHand, newCard];
+      const newPlayerScore = calculateScore(newPlayerHand);
+      const newBalance = state.balance - 50; // Double the bet
+
+      const gameStatus = newPlayerScore > 21 ? "dealer-won" : "playing";
+
+      // If player didn't bust, force dealer to play immediately
+      if (gameStatus === "playing") {
+        return gameReducer(
+          {
+            ...state,
+            deck: newDeck,
+            playerHand: newPlayerHand,
+            playerScore: newPlayerScore,
+            balance: newBalance,
+          },
+          { type: "DEALER_PLAY" }
+        );
+      }
+
+      return {
+        ...state,
+        deck: newDeck,
+        playerHand: newPlayerHand,
+        playerScore: newPlayerScore,
+        balance: newBalance,
+        gameStatus,
+      };
+    }
+
     case "DEALER_PLAY": {
       let { deck, dealerHand, balance } = state;
       let dealerScore = calculateScore(dealerHand);
@@ -129,12 +172,12 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       }
 
       let gameStatus: GameState["gameStatus"] = "playing";
-      if (dealerScore > 21) {
+
+      if (dealerScore > 21 || dealerScore < state.playerScore) {
         gameStatus = "player-won";
       } else if (dealerScore > state.playerScore) {
         gameStatus = "dealer-won";
-      } else if (dealerScore < state.playerScore) {
-        gameStatus = "player-won";
+        balance += 100;
       } else {
         gameStatus = "tie";
         balance += 50;
@@ -157,6 +200,11 @@ const GameContext = createContext<{
 // Provider component
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
+
+  useEffect(() => {
+    dispatch({ type: "INITIALIZE_GAME" });
+  }, []);
+
   return (
     <GameContext.Provider value={{ state, dispatch }}>
       {children}
