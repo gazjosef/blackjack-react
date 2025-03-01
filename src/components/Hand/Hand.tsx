@@ -1,41 +1,8 @@
 import { useGame } from "../../context/GameContext";
-import styled from "styled-components";
+import Card from "../Card/Card";
+import { HandBox, HandContainer, HandScore, HandTitle } from "./Hand.styles";
 
-const HandContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  perspective: 600px;
-  justify-content: center;
-  align-items: center;
-`;
-
-const HandTitle = styled.h2`
-  text-align: center;
-`;
-
-const HandScore = styled.p`
-  text-align: center;
-`;
-
-const CardImg = styled.img`
-  width: 80px;
-  height: 120px;
-  transform: rotateX(35deg);
-  transform-origin: center top;
-`;
-
-const getCardImage = (card: any) => {
-  const suitMap: Record<string, string> = {
-    spade: "S",
-    heart: "H",
-    diamond: "D",
-    club: "C",
-  };
-
-  return `/images/cards/${card.value}${suitMap[card.suit]}.png`;
-};
-
-interface HandProps {
+export interface HandProps {
   type: "player" | "dealer";
 }
 
@@ -47,31 +14,27 @@ const Hand = ({ type }: HandProps) => {
   const hideSecondCard = isDealer && state.gameStatus === "playing";
 
   return (
-    <div>
+    <HandContainer>
       <HandTitle>{isDealer ? "Dealer's Hand" : "Your Hand"}</HandTitle>
-      <HandContainer>
+      <HandBox type={type}>
         {hand.map((card, index) => (
-          <CardImg
-            key={index}
-            src={
-              index === 1 && hideSecondCard
-                ? "/images/cards/red_back.png"
-                : getCardImage(card)
-            }
-            alt={
-              index === 1 && hideSecondCard
-                ? "Hidden Card"
-                : `${card.value} of ${card.suit}`
-            }
+          <Card
+            key={`${card.value} of ${card.suit}`}
+            card={card}
+            isHidden={index === 1 && hideSecondCard}
           />
         ))}
-      </HandContainer>
-      {!hideSecondCard && (
-        <HandScore>
-          {isDealer ? "Dealer" : "Your"} Total: {score}
-        </HandScore>
-      )}
-    </div>
+      </HandBox>
+      <HandScore
+        style={{
+          visibility: hideSecondCard ? "hidden" : "visible",
+          opacity: hideSecondCard ? 0 : 1, // Optionally make it fade out
+          transition: "visibility 0.3s ease-out, opacity 0.3s ease-out", // Smooth transition for fade
+        }}
+      >
+        {isDealer ? "Dealer" : "Your"} Total: {score}
+      </HandScore>
+    </HandContainer>
   );
 };
 

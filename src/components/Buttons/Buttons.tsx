@@ -1,26 +1,6 @@
-import styled from "styled-components";
 import { useGame } from "../../context/GameContext";
+import { Button } from "./Buttons.styles";
 import { Flex } from "../../styles/Layout";
-
-const Button = styled.button`
-  padding: 10px 20px;
-  width: 7rem;
-  font-size: 18px;
-  cursor: pointer;
-  border: none;
-  border-radius: 5px;
-  background-color: #fff;
-  transition: 0.3s;
-
-  &:hover {
-    background-color: #ddd;
-  }
-
-  &:disabled {
-    background-color: gray;
-    cursor: not-allowed;
-  }
-`;
 
 const Buttons = () => {
   const { state, dispatch } = useGame();

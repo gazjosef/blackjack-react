@@ -1,34 +1,27 @@
-import React from "react";
-import { CardWrapper, CardImage } from "../Card/Card.styles";
-import { cardImages } from "./Card.images";
+import { CardImg } from "./Card.styles";
 
-type Suit = "heart" | "diamond" | "club" | "spade";
-type Value =
-  | "A"
-  | "2"
-  | "3"
-  | "4"
-  | "5"
-  | "6"
-  | "7"
-  | "8"
-  | "9"
-  | "10"
-  | "J"
-  | "Q"
-  | "K";
+interface CardProps {
+  card: any;
+  isHidden?: boolean;
+}
 
-const Card: React.FC<{
-  suit: Suit;
-  value: Value;
-}> = ({ suit, value }) => {
-  const cardKey = `${value}${suit.charAt(0).toUpperCase()}`;
-  const imagePath = cardImages[cardKey];
+const getCardImage = (card: any) => {
+  const suitMap: Record<string, string> = {
+    spade: "S",
+    heart: "H",
+    diamond: "D",
+    club: "C",
+  };
 
+  return `/images/cards/${card.value}${suitMap[card.suit]}.png`;
+};
+
+const Card = ({ card, isHidden = false }: CardProps) => {
   return (
-    <CardWrapper>
-      <CardImage src={imagePath} alt={`${value} of ${suit}`} />
-    </CardWrapper>
+    <CardImg
+      src={isHidden ? "/images/cards/red_back.png" : getCardImage(card)}
+      alt={isHidden ? "Hidden Card" : `${card.value} of ${card.suit}`}
+    />
   );
 };
 

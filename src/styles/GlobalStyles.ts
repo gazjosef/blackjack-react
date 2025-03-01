@@ -24,6 +24,10 @@ export const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
 
     background-color: #2f4f4f4f;
+    background-color: #222222; /* Deep charcoal for a modern feel */
+
+
+
     }
 
     /* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */

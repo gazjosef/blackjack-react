@@ -2,7 +2,9 @@ import styled from "styled-components";
 import { useGame } from "../../context/GameContext";
 
 const StatusText = styled.h2`
+  font-size: 2.5rem;
   color: white;
+  transition: visibility 0.3s ease-out, opacity 0.3s ease-out;
 `;
 
 // Utility function to convert kebab-case to Title Case
@@ -19,7 +21,7 @@ const Status = () => {
     <StatusText>
       {state.gameStatus === "playing"
         ? "Your Turn!"
-        : `Result: ${toTitleCase(state.gameStatus)}`}
+        : `${toTitleCase(state.gameStatus)}`}
     </StatusText>
   );
 };
