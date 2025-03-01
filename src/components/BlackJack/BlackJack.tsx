@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { useGame } from "../../context/GameContext";
+// Components
 import Balance from "../Balance/Balance";
 import Hand from "../Hand/Hand";
 import GameControls from "../Buttons/Buttons";
+import Status from "../Status/Status";
 
 // Styled components
 const Container = styled.div`
@@ -20,24 +21,14 @@ const Container = styled.div`
   color: white;
 `;
 
-const StatusText = styled.h2`
-  color: white;
-`;
-
 const BlackjackTable = () => {
-  const { state } = useGame();
-
   return (
     <Container>
       <Balance />
       <Hand type="dealer" />
       <Hand type="player" />
 
-      <StatusText>
-        {state.gameStatus === "playing"
-          ? "Your Turn!"
-          : `Result: ${state.gameStatus}`}
-      </StatusText>
+      <Status />
 
       <GameControls />
     </Container>

@@ -4,6 +4,7 @@ import { Flex } from "../../styles/Layout";
 
 const Button = styled.button`
   padding: 10px 20px;
+  width: 7rem;
   font-size: 18px;
   cursor: pointer;
   border: none;
@@ -44,7 +45,7 @@ const Buttons = () => {
       )}
       {state.gameStatus !== "playing" && (
         <Button onClick={() => dispatch({ type: "INITIALIZE_GAME" })}>
-          New Game
+          Deal
         </Button>
       )}
     </Flex>

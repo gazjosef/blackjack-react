@@ -52,7 +52,7 @@ const calculateScore = (hand: Card[]): number => {
   hand.forEach(({ value }) => {
     if (value === "A") {
       aceCount++;
-      score += 11; // Ace starts as 11
+      score += 11;
     } else if (["K", "Q", "J"].includes(value)) {
       score += 10;
     } else {
@@ -60,7 +60,6 @@ const calculateScore = (hand: Card[]): number => {
     }
   });
 
-  // Convert Aces from 11 to 1 if needed
   while (score > 21 && aceCount > 0) {
     score -= 10;
     aceCount--;
@@ -102,19 +101,17 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       if (state.gameStatus !== "playing") return state;
 
       const { card: newCard, newDeck } = drawCard(state.deck);
-      if (!newCard) return state; // No card left
+      if (!newCard) return state;
 
       const newPlayerHand = [...state.playerHand, newCard];
       const newPlayerScore = calculateScore(newPlayerHand);
-
-      const gameStatus = newPlayerScore > 21 ? "dealer-won" : "playing";
 
       return {
         ...state,
         deck: newDeck,
         playerHand: newPlayerHand,
         playerScore: newPlayerScore,
-        gameStatus,
+        gameStatus: newPlayerScore > 21 ? "dealer-won" : "playing",
       };
     }
 
@@ -123,39 +120,38 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     }
 
     case "DOUBLE_DOWN": {
-      if (state.gameStatus !== "playing" || state.balance < 50) return state; // Ensure valid state and enough balance
+      if (state.gameStatus !== "playing" || state.balance < 50) return state;
 
       const { card: newCard, newDeck } = drawCard(state.deck);
-      if (!newCard) return state; // No card left
+      if (!newCard) return state;
 
       const newPlayerHand = [...state.playerHand, newCard];
       const newPlayerScore = calculateScore(newPlayerHand);
-      const newBalance = state.balance - 50; // Double the bet
+      const newBalance = state.balance - 50; // Deduct another 50
 
-      const gameStatus = newPlayerScore > 21 ? "dealer-won" : "playing";
-
-      // If player didn't bust, force dealer to play immediately
-      if (gameStatus === "playing") {
-        return gameReducer(
-          {
-            ...state,
-            deck: newDeck,
-            playerHand: newPlayerHand,
-            playerScore: newPlayerScore,
-            balance: newBalance,
-          },
-          { type: "DEALER_PLAY" }
-        );
+      // If player busts, dealer wins immediately
+      if (newPlayerScore > 21) {
+        return {
+          ...state,
+          deck: newDeck,
+          playerHand: newPlayerHand,
+          playerScore: newPlayerScore,
+          balance: newBalance,
+          gameStatus: "dealer-won",
+        };
       }
 
-      return {
-        ...state,
-        deck: newDeck,
-        playerHand: newPlayerHand,
-        playerScore: newPlayerScore,
-        balance: newBalance,
-        gameStatus,
-      };
+      // Otherwise, force dealer to play
+      return gameReducer(
+        {
+          ...state,
+          deck: newDeck,
+          playerHand: newPlayerHand,
+          playerScore: newPlayerScore,
+          balance: newBalance,
+        },
+        { type: "DEALER_PLAY" }
+      );
     }
 
     case "DEALER_PLAY": {
@@ -175,15 +171,15 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
 
       if (dealerScore > 21 || dealerScore < state.playerScore) {
         gameStatus = "player-won";
+        balance += 100;
       } else if (dealerScore > state.playerScore) {
         gameStatus = "dealer-won";
-        balance += 100;
       } else {
         gameStatus = "tie";
         balance += 50;
       }
 
-      return { ...state, deck, dealerHand, dealerScore, gameStatus };
+      return { ...state, deck, dealerHand, dealerScore, balance, gameStatus };
     }
 
     default:
@@ -200,10 +196,18 @@ const GameContext = createContext<{
 // Provider component
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
+  const hasInitialized = React.useRef(false);
 
   useEffect(() => {
-    dispatch({ type: "INITIALIZE_GAME" });
-  }, []);
+    if (
+      !hasInitialized.current &&
+      state.deck.length === 0 &&
+      state.playerHand.length === 0
+    ) {
+      dispatch({ type: "INITIALIZE_GAME" });
+      hasInitialized.current = true; // Set flag to prevent duplicate runs
+    }
+  }, [state.deck, state.playerHand]);
 
   return (
     <GameContext.Provider value={{ state, dispatch }}>

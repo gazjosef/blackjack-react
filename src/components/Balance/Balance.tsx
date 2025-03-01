@@ -6,11 +6,6 @@ const BalanceInfo = styled.div`
   font-weight: bold;
 `;
 
-// type BalanceProps = {
-//   balance: number;
-//   bet: number;
-// };
-
 const Balance = () => {
   const { state } = useGame();
 
