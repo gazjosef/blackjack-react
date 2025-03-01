@@ -4,6 +4,7 @@ import React, {
   useReducer,
   ReactNode,
   useEffect,
+  useRef,
 } from "react";
 import { generateDeck, Card } from "../hooks/useDeck";
 
@@ -85,15 +86,35 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       const playerHand = [playerCard1!, playerCard2!];
       const dealerHand = [dealerCard1!, dealerCard2!];
 
+      const playerScore = calculateScore(playerHand);
+      const dealerScore = calculateScore(dealerHand);
+
+      let gameStatus: GameState["gameStatus"] = "playing";
+      let balance = state.balance - 50;
+
+      // ✅ Check for blackjack outcomes
+      const playerHasBlackjack = playerScore === 21;
+      const dealerHasBlackjack = dealerScore === 21;
+
+      if (playerHasBlackjack && dealerHasBlackjack) {
+        gameStatus = "tie"; // Tie - player gets bet back
+        balance += 50;
+      } else if (playerHasBlackjack) {
+        gameStatus = "player-won"; // Player wins with blackjack (1.5x payout)
+        balance += 125; // 50 bet + 75 winnings
+      } else if (dealerHasBlackjack) {
+        gameStatus = "dealer-won"; // Dealer wins with blackjack
+      }
+
       return {
         ...state,
         deck: deck4,
         playerHand,
         dealerHand,
-        playerScore: calculateScore(playerHand),
-        dealerScore: calculateScore(dealerHand),
-        balance: state.balance - 50,
-        gameStatus: "playing",
+        playerScore,
+        dealerScore,
+        balance,
+        gameStatus,
       };
     }
 
@@ -196,7 +217,7 @@ const GameContext = createContext<{
 // Provider component
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
-  const hasInitialized = React.useRef(false);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
     if (
