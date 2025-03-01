@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useGame } from "../../context/GameContext";
 import Balance from "../Balance/Balance";
 import Hand from "../Hand/Hand";
-import Buttons from "../Buttons/Buttons";
+import GameControls from "../Buttons/Buttons";
 
 // Styled components
 const Container = styled.div`
@@ -39,7 +39,7 @@ const BlackjackTable = () => {
           : `Result: ${state.gameStatus}`}
       </StatusText>
 
-      <Buttons />
+      <GameControls />
     </Container>
   );
 };
