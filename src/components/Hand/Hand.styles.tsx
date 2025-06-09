@@ -4,7 +4,7 @@ import { HandProps } from "./Hand";
 export const HandContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
   justify-content: center;
   align-items: center;
 `;

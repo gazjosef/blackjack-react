@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const CardImg = styled.img`
-  width: 80px;
-  height: 120px;
+  width: 100px;
+  height: 150px;
   transform: rotateX(35deg);
   transform-origin: center top;
 

@@ -5,15 +5,17 @@ const BalanceInfo = styled.div`
   margin-inline: auto;
   padding: 1rem;
   width: 100%;
+
+  color: white;
   font-size: 18px;
   font-weight: bold;
-  color: white;
+  text-align: right;
 `;
 
 const Balance = () => {
   const { state } = useGame();
 
-  return <BalanceInfo>Balance: ${state.balance} | Bet: $50</BalanceInfo>;
+  return <BalanceInfo>Bet: $50 | Balance: ${state.balance}</BalanceInfo>;
 };
 
 export default Balance;

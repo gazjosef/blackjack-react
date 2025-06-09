@@ -11,7 +11,7 @@ export const BlackJackTable = styled.div`
   width: 100vw;
   padding: 50px;
 
-  border: 20px solid darkgoldenrod;
+  border: 10px solid darkgoldenrod;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5),
     0px -10px 15px rgba(0, 0, 0, 0.3), inset 0px 0px 50px rgba(0, 0, 0, 0.6);
 
