@@ -7,7 +7,7 @@ const BalanceInfo = styled.div`
   width: 100%;
 
   color: white;
-  font-size: 18px;
+  font-size: 2.4rem;
   font-weight: bold;
   text-align: right;
 `;
