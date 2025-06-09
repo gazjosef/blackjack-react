@@ -9,7 +9,7 @@ export const BlackJackTable = styled.div`
   );
   /* min-height: 20rem; */
   width: 100vw;
-  padding: 50px;
+  padding: 3rem;
 
   border: 10px solid darkgoldenrod;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5),
