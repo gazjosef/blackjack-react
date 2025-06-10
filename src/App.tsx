@@ -1,13 +1,18 @@
 import { GameProvider } from "./context/GameContext";
-import Table from "./components/Table/Table";
-// import Card from "./components/Card/Card";
 import GlobalStyles from "./styles/GlobalStyles";
+import Table from "./components/Table/Table";
 
 const App = () => {
   return (
     <GameProvider>
       <GlobalStyles />
-      <Table />
+      <div
+        style={{
+          width: "100vw",
+        }}
+      >
+        <Table />
+      </div>
     </GameProvider>
   );
 };
